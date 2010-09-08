@@ -1,0 +1,17 @@
+Description
+-----------
+
+Magic-cleaner: Through the use of the magic library, files are sorted into directories according to the users specification.
+Basically, if there's a directory full of files (as there often is particularly with download directories), the cleaner 
+software should sort them all into each folder according to type.
+
+Version history
+---------------
+
+31/05/10 - Version 0.01
+
+Basic functionallity, moves all image files into a different directory. However, the directories are hardcoded, so the next step is to add text input block for
+the directory to be sorted and where sorted files should go, aswell as some eyecandy.
+
+Notes
+-----
