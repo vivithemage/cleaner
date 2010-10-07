@@ -116,10 +116,10 @@ int organize_clicked (void)
 			sprintf(dir_plus_act, "%s%s", sort_directory, listing->d_name);
 			magic_full = magic_file(magic_cookie, (const char *) dir_plus_act); 
 			printf("1. %s = %s\n", magic_full, dir_plus_act);
-		//	strcpy(dir_to_make, make_dir(magic_full, move_to_dir));	/*create directory*/
-		//	sprintf(movedir_mime, "%s%s/%s", move_to_dir, dir_to_make, listing->d_name);
-		//	printf("movedir_mime = %s\n", movedir_mime);			
-		//	moving_file(dir_plus_act, movedir_mime, dir_to_make);	/*move files.*/
+			strcpy(dir_to_make, make_dir(magic_full, move_to_dir));	/*create directory*/
+			sprintf(movedir_mime, "%s%s/%s", move_to_dir, dir_to_make, listing->d_name);
+			printf("movedir_mime = %s\n", movedir_mime);			
+			moving_file(dir_plus_act, movedir_mime, dir_to_make);	/*move files.*/
 		}
  
 	}
