@@ -29,7 +29,7 @@ static magic_t magic_cookie;
 const int DEF_SIZE = 512;
 const int MIME_SIZE = 32;
 
-char *mime_types[] {
+/*char *mime_types[] {
 	"unknown",
 	"directory",
 	"image",
@@ -37,7 +37,7 @@ char *mime_types[] {
 	"video",
 	"text"
 	}
-
+*/
 /*initialising magic database for use*/
 int magic_database_init(void) 
 {
@@ -58,10 +58,14 @@ int magic_database_init(void)
 /*look at the mime, if the directory does not already exist, make it*/
 char *make_dir(const char *mime_to_sort, char *move_to_dir)
 {
+	char full_mvpath[DEF_SIZE];
+	char *images = "image";
+	char *directory = "directory";
+	char *unknown ="unknown";	
 	strcpy(full_mvpath, move_to_dir);
 	if (strstr(mime_to_sort, images) != NULL) {
 		strcat(full_mvpath,(const char *) images);
-		mkdir(full_mvpath, S_IRWXU); /*creating directory*/
+		mkdir(full_mvpath, S_IRWXU); //creating directory
 		printf("created %s directory\n", full_mvpath); // Add message which stats the directory, and says if it exists. 
 		return images;
 	}
@@ -98,14 +102,10 @@ int organize_clicked (void)
 	char move_to_dir[DEF_SIZE];    // Directory to create new folders in and move files to. 
 	char movedir_mime[DEF_SIZE];   // move to directory with mime direcory concatenated.
 		
-	const char *magic_full = (char *)malloc(sizeof(DEF_SIZE));
-	if (magic_full == 0) {
-		printf("Could not allocate memory for magic_full");
-		return 1;
-	} 
+	const char *magic_full;
 
-	strcpy(sort_directory, "/home/rezdev/data/sort/");	// This needs to take input from user.
-	strcpy(move_to_dir, "/home/rezdev/data/sorted/");	// This also needs to take user input.	
+	strcpy(sort_directory, "/home/rezdev/gitting/cleaner/tests/data/sort/");	// This needs to take input from user.
+	strcpy(move_to_dir, "/home/rezdev/gitting/cleaner/tests/data/sorted/");	// This also needs to take user input.	
 
 	/*beginning directory run*/
 	DIR *directory;
@@ -115,11 +115,11 @@ int organize_clicked (void)
 		while((listing = readdir(directory))) {
 			sprintf(dir_plus_act, "%s%s", sort_directory, listing->d_name);
 			magic_full = magic_file(magic_cookie, (const char *) dir_plus_act); 
-			printf("%s = %s\n", magic_full, dir_plus_act);
-			strcpy(dir_to_make, make_dir(magic_full, move_to_dir));	/*create directory*/
-			sprintf(movedir_mime, "%s%s/%s", move_to_dir, dir_to_make, listing->d_name);
-			printf("movedir_mime = %s\n", movedir_mime);			
-			moving_file(dir_plus_act, movedir_mime, dir_to_make);	/*move files.*/
+			printf("1. %s = %s\n", magic_full, dir_plus_act);
+		//	strcpy(dir_to_make, make_dir(magic_full, move_to_dir));	/*create directory*/
+		//	sprintf(movedir_mime, "%s%s/%s", move_to_dir, dir_to_make, listing->d_name);
+		//	printf("movedir_mime = %s\n", movedir_mime);			
+		//	moving_file(dir_plus_act, movedir_mime, dir_to_make);	/*move files.*/
 		}
  
 	}
