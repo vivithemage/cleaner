@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -26,8 +27,8 @@
 #include <gtk/gtk.h>
 
 static magic_t magic_cookie;
-const int DEF_SIZE = 512;
-const int MIME_SIZE = 32;
+const int PATH_MAX = 512;
+const int PATH_MAX = 32;
 
 /*char *mime_types[] {
 	"unknown",
@@ -58,7 +59,7 @@ int magic_database_init(void)
 /*look at the mime, if the directory does not already exist, make it*/
 char *make_dir(const char *mime_to_sort, char *move_to_dir)
 {
-	char full_mvpath[DEF_SIZE];
+	char full_mvpath[PATH_MAX];
 	char *images = "image";
 	char *directory = "directory";
 	char *unknown ="unknown";	
@@ -96,11 +97,11 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 /*code run after organize is clicked*/	
 int organize_clicked (void)	
 {	
-	char sort_directory[DEF_SIZE]; // Directory which contains all the files to be sorted. 
-	char dir_to_make[MIME_SIZE];   // The mime of the file.
-	char dir_plus_act[DEF_SIZE];   // Sort directory and file nime concatenated.
-	char move_to_dir[DEF_SIZE];    // Directory to create new folders in and move files to. 
-	char movedir_mime[DEF_SIZE];   // move to directory with mime direcory concatenated.
+	char sort_directory[PATH_MAX]; // Directory which contains all the files to be sorted. 
+	char dir_to_make[PATH_MAX];   // The mime of the file.
+	char dir_plus_act[PATH_MAX];   // Sort directory and file nime concatenated.
+	char move_to_dir[PATH_MAX];    // Directory to create new folders in and move files to. 
+	char movedir_mime[PATH_MAX];   // move to directory with mime direcory concatenated.
 		
 	const char *magic_full;
 
@@ -139,8 +140,8 @@ GdkPixbuf *create_pixbuf(const gchar * filename)
    GError *error = NULL;
    pixbuf = gdk_pixbuf_new_from_file(filename, &error);
    if (!pixbuf) {
-      fprintf(stderr, "%s\n", error->message);
-      g_error_free(error);
+   	fprintf(stderr, "%s\n", error->message);
+   	g_error_free(error);
    }
    return pixbuf;
 }
