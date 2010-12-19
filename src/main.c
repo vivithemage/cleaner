@@ -27,8 +27,6 @@
 #include <gtk/gtk.h>
 
 static magic_t magic_cookie;
-const int PATH_MAX = 512;
-const int PATH_MAX = 32;
 
 /*char *mime_types[] {
 	"unknown",
@@ -148,18 +146,19 @@ GdkPixbuf *create_pixbuf(const gchar * filename)
 
 int main(int argc, char *argv[])
 {	
-	/*maybe place gtk related code in a seperate file?*/
+	/* maybe place gtk related code in a seperate file? */
 	GtkWidget *window;
+	GtkWidget *table;
+
+	/* Chosen widgets */	
+	GtkWidget *organize_directory;
 	GtkWidget *organize_button; 
-	GtkWidget *vbox;
-	GtkWidget *hbox;
-	GtkWidget *halign;
-	GtkWidget *valign;
+	
 	gtk_init (&argc, &argv);
 	
 	magic_database_init();	
 		
-	/*setting window variables and related*/	
+	/* setting window variables and related */	
 	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size (GTK_WINDOW(window), 400, 200);
@@ -167,24 +166,17 @@ int main(int argc, char *argv[])
 	gtk_window_set_icon(GTK_WINDOW(window), create_pixbuf("Ban.jpg"));
 	gtk_window_set_title(GTK_WINDOW(window), "magic-cleaner: File organizer");
 
-	vbox = gtk_vbox_new(FALSE, 5);
+	/* Create and put the table in the main window */
+	table = gtk_table_new (2, 2, TRUE); 
+	gtk_container_add (GTK_CONTAINER (window), table);
 
-	valign = gtk_alignment_new(0, 1, 0, 0);
-	gtk_container_add(GTK_CONTAINER(vbox), valign);
-	gtk_container_add(GTK_CONTAINER(window), vbox);
+	/* Create organize button and point it to the sorter and allighn it to the table */
+	organize_button = gtk_button_new_with_label ("Organize");	
+	g_signal_connect (G_OBJECT (organize_button), "clicked", G_CALLBACK (call_mime_check), NULL);	
+	gtk_table_attach_defaults (GTK_TABLE (table), organize_button, 1, 2, 0, 1);
+	gtk_widget_show (organize_button);
 
-	hbox = gtk_hbox_new(TRUE, 3);
-	
-	/*organise button*/
-	organize_button = gtk_button_new_with_label ("Organize");
-	gtk_widget_set_size_request(organize_button, 70, 30);
-	g_signal_connect (G_OBJECT (organize_button), "clicked", G_CALLBACK (call_mime_check), NULL);
-	gtk_container_add (GTK_CONTAINER (hbox), organize_button); /*used to be window*/
-	
-	halign = gtk_alignment_new(1, 0, 0, 0);
-	gtk_container_add(GTK_CONTAINER(halign), hbox);
-	gtk_box_pack_start(GTK_BOX(vbox), halign, FALSE, FALSE, 0);
-
+	/* destruction */
 	g_signal_connect_swapped(G_OBJECT(window), "destroy",
         G_CALLBACK(gtk_main_quit), G_OBJECT(window));
 
