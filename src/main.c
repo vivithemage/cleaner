@@ -28,15 +28,6 @@
 
 static magic_t magic_cookie;
 
-/*char *mime_types[] {
-	"unknown",
-	"directory",
-	"image",
-	"audio",
-	"video",
-	"text"
-	}
-*/
 /*initialising magic database for use*/
 int magic_database_init(void) 
 {
@@ -151,7 +142,7 @@ int main(int argc, char *argv[])
 	GtkWidget *table;
 
 	/* Chosen widgets */	
-	GtkWidget *organize_directory;
+	GtkWidget *file_chooser_directory;
 	GtkWidget *organize_button; 
 	
 	gtk_init (&argc, &argv);
@@ -167,7 +158,7 @@ int main(int argc, char *argv[])
 	gtk_window_set_title(GTK_WINDOW(window), "magic-cleaner: File organizer");
 
 	/* Create and put the table in the main window */
-	table = gtk_table_new (2, 2, TRUE); 
+	table = gtk_table_new (14, 14, TRUE); 
 	gtk_container_add (GTK_CONTAINER (window), table);
 
 	/* Create organize button and point it to the sorter and allighn it to the table */
@@ -176,6 +167,15 @@ int main(int argc, char *argv[])
 	gtk_table_attach_defaults (GTK_TABLE (table), organize_button, 1, 2, 0, 1);
 	gtk_widget_show (organize_button);
 
+	/* Create the file chooser widget, point the data to the new variable and allign
+ 	   to the table */
+	GtkWidget *dialog;
+	GtkFileChooser *chooser;
+	GtkFileFilter *filter;	
+
+
+
+	
 	/* destruction */
 	g_signal_connect_swapped(G_OBJECT(window), "destroy",
         G_CALLBACK(gtk_main_quit), G_OBJECT(window));

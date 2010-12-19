@@ -15,3 +15,8 @@ the directory to be sorted and where sorted files should go, aswell as some eyec
 
 Notes
 -----
+
+TODO
+-----
+
+1. Ignore .part files, may not want this moving as it is not a complete file, so if 'funnydonkey.mpg.part' exists, don't move it or 'funnydonkey.mpgi'.
