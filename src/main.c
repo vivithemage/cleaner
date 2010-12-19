@@ -77,7 +77,8 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 		return 0;
 	}
 	else {
-		printf("Did not move file %s to %s for unknown reasons (Probably because the file type has not been added.\n", dir_plus_act, movedir_mime);	
+		printf("Did not move file %s to %s for unknown reasons (Probably because the file type has not been added.\n"\
+			, dir_plus_act, movedir_mime);	
 		printf("You could request this file to be added or edit the source youself ;), please email any modifications to vivi at mage.me.uk\n"); 
 		return 0;
 	}
@@ -164,22 +165,22 @@ int main(int argc, char *argv[])
 	/* Create organize button and point it to the sorter and allighn it to the table */
 	organize_button = gtk_button_new_with_label ("Organize");	
 	g_signal_connect (G_OBJECT (organize_button), "clicked", G_CALLBACK (call_mime_check), NULL);	
-	gtk_table_attach_defaults (GTK_TABLE (table), organize_button, 1, 2, 0, 1);
+	gtk_table_attach_defaults (GTK_TABLE (table), organize_button, 13, 14, 13, 14);
 	gtk_widget_show (organize_button);
 
 	/* Create the file chooser widget, point the data to the new variable and allign
  	   to the table */
-	GtkWidget *dialog;
 	GtkFileChooser *chooser;
-	GtkFileFilter *filter;	
-
-
-
+	file_chooser_directory = gtk_file_chooser_button_new (("Select a directory"), GTK_FILE_CHOOSER_ACTION_OPEN);
+	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_chooser_directory), "/etc");
+	gtk_table_attach_defaults (GTK_TABLE (table), file_chooser_directory, 0, 4, 0, 1);
+	gtk_widget_show (file_chooser_directory);
 	
 	/* destruction */
 	g_signal_connect_swapped(G_OBJECT(window), "destroy",
         G_CALLBACK(gtk_main_quit), G_OBJECT(window));
 
+	gtk_widget_show (table);
 	gtk_widget_show_all(window);	
 	gtk_main ();
 	return 0;
