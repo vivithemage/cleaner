@@ -24,7 +24,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <magic.h>
-#include <gtk/gtk.h>
 
 static magic_t magic_cookie;
 
@@ -33,12 +32,12 @@ int magic_database_init(void)
 {
 	magic_cookie = magic_open(MAGIC_MIME);
 	if (magic_cookie == NULL) {
-	        printf("unable to initialize magic library\n");
+	        printf("Unable to initialize magic library\n");
 	        return 1;
 	}
 	printf("Loading default magic database\n");
 	if (magic_load(magic_cookie, NULL) != 0) {
-		printf("cannot load magic database - %s\n", magic_error(magic_cookie));
+		printf("Cannot load magic database - %s\n", magic_error(magic_cookie));
 	        magic_close(magic_cookie);
 		return 1;
 	}
@@ -85,7 +84,7 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 }
 
 /*code run after organize is clicked*/	
-int organize_clicked (void)	
+int organize(void)	
 {	
 	char sort_directory[PATH_MAX]; // Directory which contains all the files to be sorted. 
 	char dir_to_make[PATH_MAX];   // The mime of the file.
@@ -118,70 +117,10 @@ int organize_clicked (void)
 	return 0;
 }
 
-/*have one of these for each button?*/
-static void call_mime_check(GtkWidget *Widget, gpointer data)	{
-	organize_clicked();
-}
-
-/*Gtk icon code*/
-GdkPixbuf *create_pixbuf(const gchar * filename)
-{
-   GdkPixbuf *pixbuf;
-   GError *error = NULL;
-   pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-   if (!pixbuf) {
-   	fprintf(stderr, "%s\n", error->message);
-   	g_error_free(error);
-   }
-   return pixbuf;
-}
-
 int main(int argc, char *argv[])
 {	
-	/* maybe place gtk related code in a seperate file? */
-	GtkWidget *window;
-	GtkWidget *table;
-
-	/* Chosen widgets */	
-	GtkWidget *file_chooser_directory;
-	GtkWidget *organize_button; 
-	
-	gtk_init (&argc, &argv);
-	
 	magic_database_init();	
+  organize();
 		
-	/* setting window variables and related */	
-	window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size (GTK_WINDOW(window), 400, 200);
-	gtk_container_set_border_width (GTK_CONTAINER (window), 10);
-	gtk_window_set_icon(GTK_WINDOW(window), create_pixbuf("Ban.jpg"));
-	gtk_window_set_title(GTK_WINDOW(window), "magic-cleaner: File organizer");
-
-	/* Create and put the table in the main window */
-	table = gtk_table_new (14, 14, TRUE); 
-	gtk_container_add (GTK_CONTAINER (window), table);
-
-	/* Create organize button and point it to the sorter and allighn it to the table */
-	organize_button = gtk_button_new_with_label ("Organize");	
-	g_signal_connect (G_OBJECT (organize_button), "clicked", G_CALLBACK (call_mime_check), NULL);	
-	gtk_table_attach_defaults (GTK_TABLE (table), organize_button, 13, 14, 13, 14);
-	gtk_widget_show (organize_button);
-
-	/* Create the file chooser widget, point the data to the new variable and allign
- 	   to the table */
-	GtkFileChooser *chooser;
-	file_chooser_directory = gtk_file_chooser_button_new (("Select a directory"), GTK_FILE_CHOOSER_ACTION_OPEN);
-	gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (file_chooser_directory), "/etc");
-	gtk_table_attach_defaults (GTK_TABLE (table), file_chooser_directory, 0, 4, 0, 1);
-	gtk_widget_show (file_chooser_directory);
-	
-	/* destruction */
-	g_signal_connect_swapped(G_OBJECT(window), "destroy",
-        G_CALLBACK(gtk_main_quit), G_OBJECT(window));
-
-	gtk_widget_show (table);
-	gtk_widget_show_all(window);	
-	gtk_main ();
 	return 0;
 }
