@@ -1,6 +1,6 @@
 /*  Magicleaner: file organiser which uses magic numbers to sort files. 
 
-    Copyright (C) 2010 Reza Snowdon <vivi at mage.me.uk>
+    Copyright (C) 2010, 2011, 2012 Reza Snowdon <rs at mage.me.uk>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,9 +25,29 @@
 #include <sys/stat.h>
 #include <magic.h>
 
+/* XML related libs */
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+
+#ifdef LIBXML_TREE_ENABLED
+
 static magic_t magic_cookie;
 
-/*initialising magic database for use*/
+/* Get config file details */
+static void print_element_names(xmlNode * a_node)
+{
+    xmlNode *cur_node = NULL;
+
+    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
+        if (cur_node->type == XML_ELEMENT_NODE) {
+            printf("node type: Element, name: %s\n", cur_node->name);
+            printf("node value: Element, name: %s\n", xmlNodeGetContent(cur_node));
+        }
+        print_element_names(cur_node->children);
+    }
+}
+
+/* Initialising magic database for use */
 int magic_database_init(void) 
 {
 	magic_cookie = magic_open(MAGIC_MIME);
@@ -68,7 +88,7 @@ char *make_dir(const char *mime_to_sort, char *move_to_dir)
 int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make) 	
 {	
 	if (strcmp(dir_to_make, "directory") == 0) {
-		printf("File is a directory; skipping\n");
+		printf("File is a directory, skipping\n");
 		return 0;
 	}
 	if (rename(dir_plus_act, movedir_mime) == 0) {
@@ -83,14 +103,16 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 	}
 }
 
-/*code run after organize is clicked*/	
+/* run after organize is clicked */	
 int organize(void)	
 {	
 	char sort_directory[PATH_MAX]; // Directory which contains all the files to be sorted. 
-	char dir_to_make[PATH_MAX];   // The mime of the file.
-	char dir_plus_act[PATH_MAX];   // Sort directory and file nime concatenated.
 	char move_to_dir[PATH_MAX];    // Directory to create new folders in and move files to. 
-	char movedir_mime[PATH_MAX];   // move to directory with mime direcory concatenated.
+	
+  char dir_to_make[PATH_MAX];    // The mime of the file.
+	char dir_plus_act[PATH_MAX];   // Sort directory and file mime concatenated.
+	
+  char movedir_mime[PATH_MAX];   // move to directory with mime direcory concatenated.
 		
 	const char *magic_full;
 
@@ -111,16 +133,64 @@ int organize(void)
 			printf("movedir_mime = %s\n", movedir_mime);			
 			moving_file(dir_plus_act, movedir_mime, dir_to_make);	/*move files.*/
 		}
- 
-	}
+	} else {
+    printf("Failed to open directory %s", sort_directory);
+  }
+
 	printf("Organize end.\n");
 	return 0;
 }
 
 int main(int argc, char *argv[])
 {	
+  if (argc != 2)  {
+      printf("Pass in an xml config\n");
+      return(1);
+  } 
+  
+  xmlDoc *config_file = NULL;
+  xmlNode *root_element = NULL;
+  
+  /*
+   * this initialize the library and check potential ABI mismatches
+   * between the version it was compiled for and the actual shared
+   * library used.
+   */
+  LIBXML_TEST_VERSION
+
+  /*parse the file and get the DOM */
+  config_file = xmlReadFile(argv[1], NULL, 0);
+
+  if (config_file == NULL) {
+      printf("error: could not parse file %s\n", argv[1]);
+      return(1);
+  }
+
+  /* Get the root element node */
+  root_element = xmlDocGetRootElement(config_file);
+  print_element_names(root_element);
+
+  // magic database needs to be initialized before use
 	magic_database_init();	
-  organize();
-		
+  
+  // Main organization function
+  //organize();
+
+  /*free the document */
+  xmlFreeDoc(config_file);
+
+  /*
+  *Free the global variables that may
+  *have been allocated by the parser.
+  */
+  xmlCleanupParser();
+
 	return 0;
 }
+
+#else
+int main(void) {
+    fprintf(stderr, "XML Tree support not compiled in\n");
+    exit(1);
+}
+#endif
