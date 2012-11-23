@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <data>
-  <locaton>
-    <name>Images</name>
-    <directory>/home/vivi/images/</directory>
-  </locaton>
-  <!--<locaton>
-    <name>Video</name>
-    <directory>/home/vivi/video/</directory>
-  </locaton>
-  <locaton>
-    <name>pdf</name>
-    <directory>/home/vivi/pdf/</directory>
-  </locaton>
-  <locaton>
-    <name>source</name>
-    <directory>/home/vivi/source/</directory>
-  </locaton>-->
+  <images>
+    <filepath>/home/vivi/images/</filepath>
+  </images>
+  <check_for_updates>
+    <option>off</option>
+  </check_for_updates>
 </data>
