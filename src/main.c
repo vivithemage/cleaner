@@ -24,6 +24,9 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <magic.h>
+#include "fann.h"
+#include "update_check.h"
+#include "neural_network.h"
 
 /* XML related libs */
 #include <libxml/parser.h>

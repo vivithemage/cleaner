@@ -1,24 +1,25 @@
-GNU magic cleaner
+Magic Cleaner
 
 Description
 -----------
 
 Magic-cleaner: Through the use of the magic library, files are sorted into directories according to the users specification.
-Basically, if there's a directory full of files (as there often is particularly with download directories), the cleaner 
-software should sort them all into each folder according to type.
+Basically, if there's a directory full of files (as there often is particularly with download directories), the cleaner software 
+should sort them all into each folder according to type.
+
+A nice progression would be to train an artificial neural network (ANN) to look for patterns in folders and then sort accordingly. 
+A simple example would be pdf's in the directories "ebooks" and "invoices". A file sorter that went on file type alone would stuff 
+both of these in a folder for pdf's but a trained ANN should be able to learn the distinction. 
+For example, learning the filesize was larger in the book directoy.
 
 Version history
 ---------------
 
+31/11/12 - Version 0.02
+
+Completely forgot about this, found the code.
+
 31/05/10 - Version 0.01
 
-Basic functionallity, moves all image files into a different directory. However, the directories are hardcoded, so the next step is to add text input block for
-the directory to be sorted and where sorted files should go, aswell as some eyecandy.
-
-Notes
------
-
-TODO
------
-
-1. Ignore .part files, may not want this moving as it is not a complete file, so if 'funnydonkey.mpg.part' exists, don't move it or 'funnydonkey.mpgi'.
+Basic functionallity, moves all image files into a different directory.  However, the directories are hardcoded, so the next 
+step is to add text input block for the directory to be sorted and where sorted files should go, aswell as some eyecandy.

@@ -1,0 +1,21 @@
+TODO
+-----
+
+1. Ignore .part files, may not want this moving as it is not a complete file, so if 'funnydonkey.mpg.part' exists, 
+don't move it or 'funnydonkey.mpg' as it's probably the user is in the process of downloading and not all of the 
+file is present.
+
+2. Find a c/c++ library to parse metadata of a file. So something that would allow for
+
+  get_created_date(*file_pointer) 
+  get_size(*file_pointer) 
+  get_author(*file_pointer)
+
+2. Neural network (perhaps fann) to 'learn' directory contents and place files relating to characteristics 
+observed in directories.
+
+3. Add QT ui option but allow for both cli and gui.
+
+4. Don't use autotools etc, use scons instead.
+
+6. Choose an xml parser and writer: libxml2 seems a good choice.
