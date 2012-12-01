@@ -15,6 +15,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
 
+// standard libs
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,6 +25,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 #include <magic.h>
+
+// Non standard libs
 #include "fann.h"
 #include "update_check.h"
 #include "neural_network.h"
