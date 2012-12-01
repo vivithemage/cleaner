@@ -1,7 +1,0 @@
-Hi All,
-
-I'm trying to link libxml2. I've achieved this in a makefile, however, I'm not sure how this translates to scons. 
-
-g++ -o src/magic-file `xml2-config --cflags` src/main.c  -g -l magic `xml2-config --libs`
-
-Any help would be greatly appriciated.
