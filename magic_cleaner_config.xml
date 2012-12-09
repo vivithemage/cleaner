@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <data>
+  <sort_directory>
+    <filepath>/home/vivi/sort/</filepath>
+  </sort_directory>
+  <move_to_dir>
+    <filepath>/home/vivi/sort/</filepath>
+  </move_to_dir>
+  
   <images>
     <filepath>/home/vivi/images/</filepath>
   </images>
+  <pdf>
+    <filepath>/home/vivi/pdf/</filepath>
+  </pdf>
+  <txt>
+    <filepath>/home/vivi/txt/</filepath>
+  </txt>
   <check_for_updates>
     <option>off</option>
+    <test>test</test>
   </check_for_updates>
 </data>

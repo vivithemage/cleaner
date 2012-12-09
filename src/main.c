@@ -1,6 +1,6 @@
 /*  Magicleaner: file organiser which uses magic numbers to sort files. 
 
-    Copyright (C) 2012 Reza Snowdon <rs at mage.me.uk>
+    Copyright (C) 2010, 2011, 2012 Reza Snowdon <rs at mage.me.uk>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 
 // standard libs
 #include <stdio.h>
-#include <iostream>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -27,23 +26,21 @@
 #include <sys/stat.h>
 #include <magic.h>
 
-/* XML related libs */
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
-
 // Non standard libs
 #include "fann.h"
 #include "update_check.h"
 #include "neural_network.h"
-#include "config.h"
+
+/* XML related libs */
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 #ifdef LIBXML_TREE_ENABLED
 
 static magic_t magic_cookie;
 
 /* Get config file details */
-static void parse_config(xmlNode * a_node)
+static void print_element_names(xmlNode * a_node)
 {
     xmlNode *cur_node = NULL;
 
@@ -52,7 +49,7 @@ static void parse_config(xmlNode * a_node)
             printf("node type: Element, name: %s\n", cur_node->name);
             printf("node value: Element, name: %s\n", xmlNodeGetContent(cur_node));
         }
-        parse_config(cur_node->children);
+        print_element_names(cur_node->children);
     }
 }
 
@@ -76,11 +73,10 @@ int magic_database_init(void)
 /*look at the mime, if the directory does not already exist, make it*/
 char *make_dir(const char *mime_to_sort, char *move_to_dir)
 {
-	char *full_mvpath;
-	char *images;
-	char *directory;
-	char *unknown;	
-
+	char full_mvpath[PATH_MAX];
+	char *images = "image";
+	char *directory = "directory";
+	char *unknown ="unknown";	
 	strcpy(full_mvpath, move_to_dir);
 	if (strstr(mime_to_sort, images) != NULL) {
 		strcat(full_mvpath,(const char *) images);
@@ -116,13 +112,13 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 /* run after organize is clicked */	
 int organize(void)	
 {	
-	char *sort_directory; // Directory which contains all the files to be sorted. 
-	char *move_to_dir;    // Directory to create new folders in and move files to. 
+	char sort_directory[PATH_MAX]; // Directory which contains all the files to be sorted. 
+	char move_to_dir[PATH_MAX];    // Directory to create new folders in and move files to. 
 	
-  char *dir_to_make;    // The mime of the file.
-	char *dir_plus_act;   // Sort directory and file mime concatenated.
+  char dir_to_make[PATH_MAX];    // The mime of the file.
+	char dir_plus_act[PATH_MAX];   // Sort directory and file mime concatenated.
 	
-  char *movedir_mime;   // move to directory with mime direcory concatenated.
+  char movedir_mime[PATH_MAX];   // move to directory with mime direcory concatenated.
 		
 	const char *magic_full;
 
@@ -153,34 +149,46 @@ int organize(void)
 
 int main(int argc, char *argv[])
 {	
+  if (argc != 2)  {
+      printf("Pass in an xml config\n");
+      return(1);
+  } 
+  
   xmlDoc *config_file = NULL;
   xmlNode *root_element = NULL;
   
+  /*
+   * this initialize the library and check potential ABI mismatches
+   * between the version it was compiled for and the actual shared
+   * library used.
+   */
   LIBXML_TEST_VERSION
 
   /*parse the file and get the DOM */
+  config_file = xmlReadFile(argv[1], NULL, 0);
+
   if (config_file == NULL) {
-      printf("Error: could not parse file, using default\n'");
-      config_file = xmlReadFile("magic_cleaner_config.xml", NULL, 0);
+      printf("error: could not parse file %s\n", argv[1]);
+      return(1);
   }
 
   /* Get the root element node */
   root_element = xmlDocGetRootElement(config_file);
-  char *element_retval;
-  //printf ("result: %s", parse_config(root_element, "images", &element_retval));
-  //printf("$s << here", *element_retval);
+  print_element_names(root_element);
 
   // magic database needs to be initialized before use
 	magic_database_init();	
   
   // Main organization function
-  // organize();
+  //organize();
 
-  /* free the document */
+  /*free the document */
   xmlFreeDoc(config_file);
 
-  /* Free the global variables that may have been allocated 
-     by the parser. */
+  /*
+  *Free the global variables that may
+  *have been allocated by the parser.
+  */
   xmlCleanupParser();
 
 	return 0;

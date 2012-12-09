@@ -1,1 +1,1 @@
-mv tests/data/sorted/image/* tests/data/sort/
+cp -r tests/data/sorted/image/* tests/data/sort/
