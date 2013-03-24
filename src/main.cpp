@@ -34,7 +34,7 @@
 #include "update_check.h"
 #include "neural_network.h"
 #include "get_metadata.h"
-#include "config_file.h"
+//#include "ConfigFile.h"
 #include "get_config.h"
 #include "utils.h"
 
@@ -143,7 +143,6 @@ int main(int argc, char *argv[])
     magic_database_init();	
     printf("first argument: %s\n", argv[1]);
     //char *filename = "bleh";
-    get_config();
     get_metadata();
     
     ConfigFile cf("config.txt");
@@ -152,13 +151,13 @@ int main(int argc, char *argv[])
     std::string water;
     double four;
     
-    //foo = cf.Value("section_1","foo");
-    //water = cf.Value("section_2","water");
-    four = cf.Value("section_2","four");
+    foo = cf.Value("section_1","foo");
+    water = cf.Value("section_2","water");
+    //four = cf.Value("section_2","four");
     
-    //std::cout << foo   << std::endl;
-    //std::cout << water << std::endl;
-    std::cout << four  << std::endl;
+    std::cout << foo   << std::endl;
+    std::cout << water << std::endl;
+    //std::cout << four  << std::endl;
     
     // Main organization function
     // organize();

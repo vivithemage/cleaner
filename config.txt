@@ -1,0 +1,8 @@
+[section_1]
+foo  = /home/vivi/oof/bleh
+water = /var/log/bleh.txt
+
+[section_2]
+foo = foo
+water = 34
+four = 4.2
