@@ -1,2 +1,2 @@
 /* Retrieve metadata */
-int get_metadata();
+int get_config();

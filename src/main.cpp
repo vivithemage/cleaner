@@ -1,60 +1,45 @@
-/*  Magicleaner: file organiser which uses magic numbers to sort files. 
+/*
+ *  Copyright (C) 2013 by Reza Snowdon <rs@mage.me.uk>
+ *
+ *  magicleaner is a file sorter that can learn how to sort files.
+ *
+ *  This file is part of magicleaner.
+ *
+ *  Magicleaner is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Magicleaner is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with magicleaner.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 
-    Copyright (C) 2012 Reza Snowdon <rs at mage.me.uk>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+#define VERSION "0.3"
 
 // standard libs
-#include <stdio.h>
 #include <iostream>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <limits.h>
-#include <errno.h>
 #include <dirent.h>
 #include <sys/stat.h>
 #include <magic.h>
-
-/* XML related libs */
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#include <libxml/xpath.h>
 
 // Non standard libs
 #include "fann.h"
 #include "update_check.h"
 #include "neural_network.h"
-#include "config.h"
+#include "get_metadata.h"
+#include "config_file.h"
+#include "get_config.h"
+#include "utils.h"
 
-#ifdef LIBXML_TREE_ENABLED
-
+using namespace std;
 static magic_t magic_cookie;
-
-/* Get config file details */
-static void parse_config(xmlNode * a_node)
-{
-    xmlNode *cur_node = NULL;
-
-    for (cur_node = a_node; cur_node; cur_node = cur_node->next) {
-        if (cur_node->type == XML_ELEMENT_NODE) {
-            printf("node type: Element, name: %s\n", cur_node->name);
-            printf("node value: Element, name: %s\n", xmlNodeGetContent(cur_node));
-        }
-        parse_config(cur_node->children);
-    }
-}
 
 /* Initialising magic database for use */
 int magic_database_init(void) 
@@ -88,7 +73,8 @@ char *make_dir(const char *mime_to_sort, char *move_to_dir)
 		printf("created %s directory\n", full_mvpath); // Add message which stats the directory, and says if it exists. 
 		return images;
 	}
-	if (strstr(mime_to_sort, directory) != NULL) {
+	
+        if (strstr(mime_to_sort, directory) != NULL) {
 		return directory;
 	}
 	return unknown;
@@ -116,13 +102,13 @@ int moving_file(char *dir_plus_act, char *movedir_mime, char *dir_to_make)
 /* run after organize is clicked */	
 int organize(void)	
 {	
-	char *sort_directory; // Directory which contains all the files to be sorted. 
+        char *sort_directory; // Directory which contains all the files to be sorted. 
 	char *move_to_dir;    // Directory to create new folders in and move files to. 
 	
-  char *dir_to_make;    // The mime of the file.
+        char *dir_to_make;    // The mime of the file.
 	char *dir_plus_act;   // Sort directory and file mime concatenated.
 	
-  char *movedir_mime;   // move to directory with mime direcory concatenated.
+        char *movedir_mime;   // move to directory with mime direcory concatenated.
 		
 	const char *magic_full;
 
@@ -153,42 +139,29 @@ int organize(void)
 
 int main(int argc, char *argv[])
 {	
-  xmlDoc *config_file = NULL;
-  xmlNode *root_element = NULL;
-  
-  LIBXML_TEST_VERSION
-
-  /*parse the file and get the DOM */
-  if (config_file == NULL) {
-      printf("Error: could not parse file, using default\n'");
-      config_file = xmlReadFile("magic_cleaner_config.xml", NULL, 0);
-  }
-
-  /* Get the root element node */
-  root_element = xmlDocGetRootElement(config_file);
-  char *element_retval;
-  //printf ("result: %s", parse_config(root_element, "images", &element_retval));
-  //printf("$s << here", *element_retval);
-
-  // magic database needs to be initialized before use
-	magic_database_init();	
-  
-  // Main organization function
-  // organize();
-
-  /* free the document */
-  xmlFreeDoc(config_file);
-
-  /* Free the global variables that may have been allocated 
-     by the parser. */
-  xmlCleanupParser();
-
-	return 0;
+    // magic database needs to be initialized before use
+    magic_database_init();	
+    printf("first argument: %s\n", argv[1]);
+    //char *filename = "bleh";
+    get_config();
+    get_metadata();
+    
+    ConfigFile cf("config.txt");
+    
+    std::string foo;
+    std::string water;
+    double four;
+    
+    //foo = cf.Value("section_1","foo");
+    //water = cf.Value("section_2","water");
+    four = cf.Value("section_2","four");
+    
+    //std::cout << foo   << std::endl;
+    //std::cout << water << std::endl;
+    std::cout << four  << std::endl;
+    
+    // Main organization function
+    // organize();
+    
+    return 0;
 }
-
-#else
-int main(void) {
-    fprintf(stderr, "XML Tree support not compiled in\n");
-    exit(1);
-}
-#endif
