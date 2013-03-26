@@ -142,22 +142,15 @@ int main(int argc, char *argv[])
     // magic database needs to be initialized before use
     magic_database_init();	
     printf("first argument: %s\n", argv[1]);
-    //char *filename = "bleh";
     get_metadata();
     
-    ConfigFile cf("config.txt");
+    ConfigFile cf("magic-cleaner.conf");
     
-    std::string foo;
-    std::string water;
-    double four;
+    std::string directorytosort;
     
-    foo = cf.Value("section_1","foo");
-    water = cf.Value("section_2","water");
-    //four = cf.Value("section_2","four");
+    directorytosort = cf.Value("main","directory_to_sort");
     
-    std::cout << foo   << std::endl;
-    std::cout << water << std::endl;
-    //std::cout << four  << std::endl;
+    std::cout << directorytosort << std::endl;
     
     // Main organization function
     // organize();

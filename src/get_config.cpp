@@ -1,6 +1,9 @@
 #include "get_config.h"
-
 #include <fstream>
+#include <iostream>
+#include <cstdlib>
+
+using namespace std;
 
 std::string trim(std::string const& source, char const* delims = " \t\r\n") {
   std::string result(source);
@@ -18,6 +21,13 @@ std::string trim(std::string const& source, char const* delims = " \t\r\n") {
 
 ConfigFile::ConfigFile(std::string const& configFile) {
   std::ifstream file(configFile.c_str());
+  // check it actually exists
+  if(ifstream("magic-cleaner.conf"))  {
+    cout << "Got config" << endl;
+  } else {
+    cout << "config does not exist, exiting...." << endl;
+    exit(1);
+  }
 
   std::string line;
   std::string name;
@@ -58,15 +68,6 @@ std::string const& ConfigFile::Value(std::string const& section, std::string con
 
   return ci->second;
 }
-
-/*Chameleon*/
-//std::string const& ConfigFile::Value(std::string const& section, std::string const& entry, double value) {
-//  try {
-//    return Value(section, entry);
-//  } catch(const char *) {
-//    return content_.insert(std::make_pair(section+'/'+entry, /*Chameleon(*/value/*)*/)).first->second;
-//  }
-//}
 
 /*Chameleon*/
 std::string const& ConfigFile::Value(std::string const& section, std::string const& entry, std::string const& value) {
