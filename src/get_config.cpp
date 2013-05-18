@@ -22,6 +22,7 @@ std::string trim(std::string const& source, char const* delims = " \t\r\n") {
 ConfigFile::ConfigFile(std::string const& configFile) {
   std::ifstream file(configFile.c_str());
   // check it actually exists
+  cout << "here" << configFile << endl;
   if(ifstream("magic-cleaner.conf"))  {
     cout << "Got config" << endl;
   } else {

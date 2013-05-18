@@ -143,8 +143,19 @@ int main(int argc, char *argv[])
     magic_database_init();	
     printf("first argument: %s\n", argv[1]);
     get_metadata();
-    
-    ConfigFile cf("magic-cleaner.conf");
+
+    // check you a config has been passed in
+    const char *config_file_name = argv[1];
+
+    if (FILE * file = fopen(config_file_name, "r")) 
+    {
+        fclose(file);
+    } else {
+        cout << "config file could not be opened, exiting.." << endl;
+        return false;
+    }
+  
+    ConfigFile cf(argv[1]);
     
     std::string directorytosort;
     
